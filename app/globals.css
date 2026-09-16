@@ -22,36 +22,33 @@ h3 {
   font-weight: 800;
 }
 
-/* ============ TRUST STRIP MARQUEE (mobile only) ============
+/* ============ TRUST STRIP MARQUEE ============
    CSS-only infinite scroll, per
    https://blog.logto.io/css-only-infinite-scroll
-   On small screens the avatar row scrolls horizontally on its own so
-   all 4 logos fit without cramming. The track holds the avatar list
+   The avatar row scrolls horizontally on its own, at every
+   breakpoint (see TrustStrip.tsx). The track holds the avatar list
    TWICE back to back with NO gap between the two copies (any seam
    spacing lives inside each copy's own trailing padding instead —
-   see TrustStrip.tsx). That's what makes translateX(-50%) land
+   see TrustStrip.tsx). That's what makes translate3d(-50%) land
    exactly on the halfway point: with two equal-width, directly
    adjacent copies, -50% of the combined width is precisely one
    copy's width, so the second copy (hidden from screen readers)
    slides into exactly where the first one started and the loop reads
-   as continuous instead of skipping once per cycle. At the md
-   breakpoint the second copy is hidden (see TrustStrip.tsx) and the
-   animation is turned off here too, or the single remaining copy
-   would slide left and never loop. */
+   as continuous instead of skipping once per cycle.
+   will-change + translate3d (rather than translateX) keep this on
+   its own GPU-composited layer — without it, some browsers visibly
+   hitch for a frame right at the loop boundary instead of looping
+   smoothly. */
 .marquee-track {
   animation: marquee-scroll 30s linear infinite;
-}
-@media (min-width: 768px) {
-  .marquee-track {
-    animation: none;
-  }
+  will-change: transform;
 }
 @keyframes marquee-scroll {
   from {
-    transform: translateX(0);
+    transform: translate3d(0, 0, 0);
   }
   to {
-    transform: translateX(-50%);
+    transform: translate3d(-50%, 0, 0);
   }
 }
 /* Pause on hover so users can read a name/company before it scrolls
