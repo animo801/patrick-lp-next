@@ -13,13 +13,14 @@ export const CtaLink = forwardRef<
     id?: string;
     className?: string;
     children: React.ReactNode;
+    href?: string;
   }
->(function CtaLink({ id, className, children }, ref) {
+>(function CtaLink({ id, className, children, href = ASSESSMENT_URL }, ref) {
   return (
     <a
       ref={ref}
       id={id}
-      href={ASSESSMENT_URL}
+      href={href}
       data-cta="assessment"
       className={className}
     >

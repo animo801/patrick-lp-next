@@ -2,7 +2,7 @@ import Image from 'next/image';
 import heroContractor from '@/app/assets/images/hero-contractor.jpg';
 import { CtaLink } from './CtaLink';
 
-export function Hero() {
+export function Hero({ ctaHref }: { ctaHref?: string } = {}) {
   return (
     <section className='px-0 md:px-6'>
       <div className='md:mx-auto md:flex md:max-w-[1100px] md:items-center md:gap-12'>
@@ -35,6 +35,7 @@ export function Hero() {
           </p>
           <CtaLink
             id='hero-cta'
+            href={ctaHref}
             className='mt-6 flex h-14 w-full items-center justify-center rounded-lg bg-blue px-6 font-sans text-xl font-extrabold text-white no-underline md:inline-flex md:w-auto md:px-10'
           >
             Start the assessment

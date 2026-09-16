@@ -4,7 +4,16 @@
 // this one value and every CTA (hero, sticky, final) updates at once.
 export const ASSESSMENT_URL = "/assessment";
 
+// /score-app is an exact clone of the homepage, except its CTAs skip
+// the in-app quiz and go straight to this external funnel instead.
+export const SCORE_APP_ASSESSMENT_URL =
+  "https://go.3pcllc.com/millionaire-contractor-growth-blueprint/assessement";
+
 // [CONFIRM] Placeholder — the results page's "book a call" CTA points
 // here. Swap for Patrick's real booking link (Calendly, GHL, etc.)
 // once it exists.
 export const BOOKING_URL = "#book-a-call";
+
+// Meta (Facebook) Pixel dataset — see app/layout.tsx for the pixel
+// base code that uses this.
+export const META_PIXEL_DATASET_ID = "874409346397147";

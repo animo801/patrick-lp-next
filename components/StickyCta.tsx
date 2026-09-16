@@ -12,7 +12,7 @@ import { CtaLink } from "./CtaLink";
  * the section below the hero can already be visible on load, which
  * would fire a section-boundary trigger immediately.
  */
-export function StickyCta() {
+export function StickyCta({ ctaHref }: { ctaHref?: string } = {}) {
   const desktopRef = useRef<HTMLAnchorElement>(null);
   const mobileRef = useRef<HTMLDivElement>(null);
 
@@ -39,6 +39,7 @@ export function StickyCta() {
     <>
       <CtaLink
         ref={desktopRef}
+        href={ctaHref}
         className="cta-reveal fixed top-4 right-4 z-50 hidden items-center justify-center rounded-lg bg-blue px-5 py-3 font-sans text-sm font-extrabold text-white no-underline shadow-lg md:inline-flex"
       >
         Start the Assessment
@@ -47,7 +48,10 @@ export function StickyCta() {
         ref={mobileRef}
         className="cta-reveal fixed inset-x-0 bottom-0 z-50 bg-white/95 px-4 py-3 shadow-[0_-2px_10px_rgba(0,0,0,0.1)] md:hidden"
       >
-        <CtaLink className="flex w-full items-center justify-center rounded-lg bg-blue px-6 py-4 font-sans text-base font-extrabold text-white no-underline">
+        <CtaLink
+          href={ctaHref}
+          className="flex w-full items-center justify-center rounded-lg bg-blue px-6 py-4 font-sans text-base font-extrabold text-white no-underline"
+        >
           Start the Assessment
         </CtaLink>
       </div>
