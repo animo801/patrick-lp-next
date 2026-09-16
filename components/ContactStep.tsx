@@ -14,7 +14,7 @@ export function ContactStep({
   return (
     <section className="px-6 pb-10 pt-6 md:mx-auto md:max-w-xl">
       <h1 className="text-[32px] leading-[1.1] md:text-[48px]">
-        Great, just tell me where to send it.
+        Great, just tell me where to send your video review.
       </h1>
 
       <form
@@ -27,22 +27,14 @@ export function ContactStep({
           const data = new FormData(e.currentTarget);
           onSubmit({
             name: String(data.get("name") ?? ""),
-            business: String(data.get("business") ?? ""),
             email: String(data.get("email") ?? ""),
             phone: String(data.get("phone") ?? ""),
           });
         }}
       >
         <ContactField label="Full name" type="text" name="name" required />
-        <ContactField
-          label="Business name"
-          type="text"
-          name="business"
-          required
-        />
         <ContactField label="Email" type="email" name="email" required />
-        {/* [CONFIRM] Phone is the one optional field, per request. */}
-        <ContactField label="Phone (optional)" type="tel" name="phone" />
+        <ContactField label="Phone" type="tel" name="phone" required />
 
         <button
           type="submit"
@@ -66,7 +58,7 @@ function ContactField({
       </span>
       <input
         {...inputProps}
-        className="h-18 w-full rounded border border-black/10 bg-black/5 px-4 text-lg text-black outline-none focus:ring-2 focus:ring-blue"
+        className="h-12 w-full rounded border border-black/10 bg-black/5 px-3 text-base text-black outline-none focus:ring-2 focus:ring-blue"
       />
     </label>
   );

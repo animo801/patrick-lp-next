@@ -27,9 +27,9 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestionConfig[] = [
     type: "select",
     question: "What kind of contracting business are you in?",
     options: [
+      "Specialty trade (electrical, plumbing, HVAC, etc.)",
       "General contractor / builder",
       "Remodeler",
-      "Specialty trade (electrical, plumbing, HVAC, etc.)",
       "Something else",
     ],
   },
@@ -38,52 +38,71 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestionConfig[] = [
     type: "select",
     question: "What's your business's annual revenue?",
     helperText: "Your best estimate for the last 12 months is fine.",
-    options: ["Under $500k", "$500k – $1M", "$1M – $3M", "$3M or more"],
-  },
-  {
-    id: "grossMargin",
-    type: "select",
-    question: "How often do you hit your target gross margin?",
-    helperText:
-      "When we say gross margin, we mean the percent of the money you keep from each job.",
-    options: [
-      "80% or more of jobs",
-      "Between 40% and 79% of jobs",
-      "Less than 40% of jobs",
-      "We don’t have GM% targets",
-    ],
+    options: ["Under $1M", "$1M – $5M", "$5M – $15M", "$15M or more"],
   },
   {
     id: "cogs",
     type: "select",
-    question: "What would you estimate your cost of goods sold to be?",
-    helperText:
-      "The direct cost of labor and materials for your jobs, as a percent of revenue.",
+    question: "What is your average gross profit margin?",
     options: [
-      "Less than 50% of revenue",
-      "50% – 65% of revenue",
-      "65% – 80% of revenue",
-      "More than 80% of revenue",
+      "I am not sure",
+      "Under 20%",
+      "20% to 30%",
+      "30% to 40%",
+      "Above 40%",
+    ],
+  },
+  {
+    id: "grossMargin",
+    type: "select",
+    question:
+      "How accurate is your job costing (labor, materials, subs) by the time the month closes?",
+    options: [
+      "Very accurate. Costs are coded correctly and reconciled quickly",
+      "Mostly accurate, with a few clean-up items each month",
+      "Often inaccurate. We do a lot of reclasses later",
+      "We do not job cost consistently",
+    ],
+  },
+  {
+    id: "arAging",
+    type: "select",
+    question: "What does your accounts receivable (AR) look like most months?",
+    options: [
+      "Mostly current. Very little over 30 days",
+      "Some over 30 days, but we stay on it",
+      "A/R regularly drifts past 60 days",
+      "A/R is a constant fire drill (90+ days is common)",
+    ],
+  },
+  {
+    id: "cashRunway",
+    type: "select",
+    question:
+      "If revenue stopped tomorrow, how many weeks could you cover payroll and overhead from cash (without borrowing)?",
+    options: [
+      "8+ weeks",
+      "4-7 weeks",
+      "1-3 weeks",
+      "Less than 1 week",
     ],
   },
   {
     id: "headcount",
     type: "select",
-    question: "How many people work in your office?",
-    helperText: "Think admin, project management, and sales — not field crews.",
+    question: "How many people work in your office, not the field?",
     options: ["Just me", "2 – 3 people", "4 – 7 people", "8 or more people"],
   },
   {
     id: "otherExpenses",
     type: "select",
-    question: "How much would you guess you spend on other expenses?",
-    helperText:
-      "Rent, software, insurance, marketing — everything outside of COGS and payroll.",
+    question: "After all expenses, what is your net profit?",
     options: [
-      "Less than $5,000/month",
-      "$5,000 – $15,000/month",
-      "$15,000 – $30,000/month",
-      "More than $30,000/month",
+      "Under 5%",
+      "5% to 10%",
+      "10% to 15%",
+      "Above 15%",
+      "I am not sure",
     ],
   },
   {
@@ -95,21 +114,6 @@ export const ASSESSMENT_QUESTIONS: AssessmentQuestionConfig[] = [
       "$75k – $150k/year",
       "$150k – $250k/year",
       "More than $250k/year",
-    ],
-  },
-  {
-    id: "priority",
-    type: "select",
-    question: "How big of a priority is improving your business?",
-    helperText:
-      "Generally when we work with a contractor, they put about $150k more in their account.",
-    // [CONFIRM] Priority-scale options are a guess to fit the new
-    // question wording — swap for Patrick's actual scale if different.
-    options: [
-      "Not a priority right now",
-      "Somewhat a priority",
-      "A high priority",
-      "My top priority",
     ],
   },
 ];

@@ -1,3 +1,4 @@
+import { Suspense } from "react";
 import { Header } from "@/components/Header";
 import { AssessmentFlow } from "@/components/AssessmentFlow";
 import { ASSESSMENT_QUESTIONS } from "@/lib/assessment-questions";
@@ -9,7 +10,13 @@ export default function AssessmentPage() {
   return (
     <>
       <Header />
-      <AssessmentFlow questions={ASSESSMENT_QUESTIONS} />
+      {/* AssessmentFlow reads the `step` search param (via
+          useSearchParams) to sync its position with browser
+          back/forward — that requires a Suspense boundary for
+          production builds. */}
+      <Suspense>
+        <AssessmentFlow questions={ASSESSMENT_QUESTIONS} />
+      </Suspense>
     </>
   );
 }
