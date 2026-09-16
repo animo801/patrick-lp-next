@@ -1,0 +1,97 @@
+@import "tailwindcss";
+
+/* ============ DESIGN TOKENS ============
+   These become real Tailwind utilities automatically:
+   --color-* -> bg-blue, text-navy, etc.
+   --font-*  -> font-sans (Poppins, wired up via next/font in layout.tsx)
+   Change a value here and every utility using it updates. */
+@theme inline {
+  --color-blue: #1f7fee; /* primary brand blue - CTA buttons + section backgrounds */
+  --color-navy: #003571; /* dark navy - testimonial card borders */
+  --font-sans: var(--font-poppins);
+}
+
+body {
+  background: #fff;
+  color: #000;
+}
+
+h1,
+h2,
+h3 {
+  font-weight: 800;
+}
+
+/* ============ TRUST STRIP MARQUEE (mobile only) ============
+   CSS-only infinite scroll, per
+   https://blog.logto.io/css-only-infinite-scroll
+   On small screens the avatar row scrolls horizontally on its own so
+   all 4 logos fit without cramming. The track holds the avatar list
+   TWICE back to back with NO gap between the two copies (any seam
+   spacing lives inside each copy's own trailing padding instead —
+   see TrustStrip.tsx). That's what makes translateX(-50%) land
+   exactly on the halfway point: with two equal-width, directly
+   adjacent copies, -50% of the combined width is precisely one
+   copy's width, so the second copy (hidden from screen readers)
+   slides into exactly where the first one started and the loop reads
+   as continuous instead of skipping once per cycle. At the md
+   breakpoint the second copy is hidden (see TrustStrip.tsx) and the
+   animation is turned off here too, or the single remaining copy
+   would slide left and never loop. */
+.marquee-track {
+  animation: marquee-scroll 30s linear infinite;
+}
+@media (min-width: 768px) {
+  .marquee-track {
+    animation: none;
+  }
+}
+@keyframes marquee-scroll {
+  from {
+    transform: translateX(0);
+  }
+  to {
+    transform: translateX(-50%);
+  }
+}
+/* Pause on hover so users can read a name/company before it scrolls
+   away. Gated on (hover: hover) so a tap on touch devices doesn't
+   latch the animation in a paused state. */
+@media (hover: hover) {
+  .marquee-track:hover {
+    animation-play-state: paused;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee-track {
+    animation: none;
+  }
+}
+
+/* ============ STICKY CTA REVEAL ============
+   Both sticky CTAs (desktop top-right, mobile bottom bar) start
+   invisible and fade in once StickyCta's scroll-observer effect adds
+   .is-visible. pointer-events stays off while hidden so an invisible
+   button can't eat taps/clicks before it's shown. */
+.cta-reveal {
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.4s ease;
+}
+.cta-reveal.is-visible {
+  opacity: 1;
+  pointer-events: auto;
+}
+
+/* ============ FAQ ACCORDION ============
+   Plain <details>/<summary> so it works with zero JS. The chevron
+   rotates via the [open] attribute selector. */
+.faq-item[open] > summary .faq-chevron {
+  transform: rotate(180deg);
+}
+.faq-item > summary {
+  list-style: none;
+}
+.faq-item > summary::-webkit-details-marker {
+  display: none;
+}
