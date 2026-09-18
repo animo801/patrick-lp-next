@@ -1,5 +1,6 @@
 import type { InputHTMLAttributes } from "react";
 import type { ContactInfo } from "@/lib/assessmentReport";
+import { trackCustomEvent } from "@/lib/meta-pixel-client";
 
 /**
  * Final step of the assessment: collect contact info before showing
@@ -13,7 +14,7 @@ export function ContactStep({
 }) {
   return (
     <section className="px-6 pb-10 pt-6 md:mx-auto md:max-w-xl">
-      <h1 className="text-[32px] leading-[1.1] md:text-[48px]">
+      <h1 className="text-[22px] leading-[1.15] md:text-[32px]">
         Great, just tell me where to send your video review.
       </h1>
 
@@ -25,10 +26,13 @@ export function ContactStep({
           // state — wire this up to the real lead-capture destination
           // (GHL, an API route, etc.) once it exists.
           const data = new FormData(e.currentTarget);
+          const email = String(data.get("email") ?? "");
+          const phone = String(data.get("phone") ?? "");
+          trackCustomEvent("Submit from Vercel App", { email, phone });
           onSubmit({
             name: String(data.get("name") ?? ""),
-            email: String(data.get("email") ?? ""),
-            phone: String(data.get("phone") ?? ""),
+            email,
+            phone,
           });
         }}
       >

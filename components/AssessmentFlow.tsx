@@ -171,7 +171,7 @@ export function AssessmentFlow({
         <p className="text-lg font-extrabold text-black/50">
           Question #{currentIndex + 1}
         </p>
-        <h1 className="mt-2 text-[24px] leading-[1.1] md:text-[48px]">
+        <h1 className="mt-2 text-[22px] leading-[1.15] md:text-[32px]">
           {question.question}
         </h1>
         {question.helperText ? (
