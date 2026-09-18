@@ -33,6 +33,13 @@ export async function sendCapiEvent(input: CapiEventInput): Promise<{
   if (!accessToken) {
     return { ok: false, error: "META_CAPI_ACCESS_TOKEN is not set" };
   }
+  // Server events only show up in Events Manager's "Test events" tab
+  // when they carry the test code shown there. Set this env var while
+  // testing and remove it for real traffic.
+  // [TEMP] Hardcoded fallback so the deployed site sends test events
+  // without an env var — REMOVE the fallback once testing is done, or
+  // real leads will be tagged as test events and won't count.
+  const testEventCode = process.env.META_CAPI_TEST_EVENT_CODE ?? "TEST71117";
 
   const userData: Record<string, unknown> = {
     client_ip_address: input.clientIp,
@@ -54,6 +61,7 @@ export async function sendCapiEvent(input: CapiEventInput): Promise<{
         user_data: userData,
       },
     ],
+    ...(testEventCode ? { test_event_code: testEventCode } : {}),
   };
 
   const url = `https://graph.facebook.com/${GRAPH_API_VERSION}/${META_PIXEL_DATASET_ID}/events?access_token=${accessToken}`;
@@ -64,10 +72,18 @@ export async function sendCapiEvent(input: CapiEventInput): Promise<{
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(body),
     });
+    const text = await res.text();
     if (!res.ok) {
-      const text = await res.text();
       return { ok: false, error: `Meta CAPI ${res.status}: ${text}` };
     }
+    // Meta replies with { events_received, fbtrace_id } — log it so a
+    // successful send is visible (and traceable) in the server logs.
+    console.log(
+      "[meta-capi] sent",
+      input.eventName,
+      text,
+      testEventCode ? `(test code ${testEventCode})` : "",
+    );
     return { ok: true };
   } catch (err) {
     return { ok: false, error: String(err) };

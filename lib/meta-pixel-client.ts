@@ -15,7 +15,12 @@ export function trackCustomEvent(
 ) {
   const eventId = crypto.randomUUID();
 
-  window.fbq?.("trackCustom", eventName, {}, { eventID: eventId });
+  if (window.fbq) {
+    window.fbq("trackCustom", eventName, {}, { eventID: eventId });
+  } else {
+    // Usually an ad blocker or the pixel script failing to load.
+    console.warn("[meta-pixel] fbq not available — browser event skipped");
+  }
 
   fetch("/api/capi-event", {
     method: "POST",
@@ -28,5 +33,11 @@ export function trackCustomEvent(
       phone: contact.phone,
     }),
     keepalive: true,
-  }).catch(() => {});
+  })
+    .then((res) => {
+      if (!res.ok) {
+        console.error("[meta-capi] /api/capi-event failed", res.status);
+      }
+    })
+    .catch((err) => console.error("[meta-capi] /api/capi-event error", err));
 }
