@@ -144,11 +144,14 @@ export async function submitLeadToGhl({
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(payload),
     });
-    if (!res.ok) {
-      console.error(`GHL webhook: ${res.status} ${await res.text()}`);
+    const body = await res.text();
+    if (res.ok) {
+      console.log(`GHL webhook (${payload.email}): ${res.status} ${body}`);
+    } else {
+      console.error(`GHL webhook (${payload.email}): ${res.status} ${body}`);
     }
   } catch (err) {
     const msg = err instanceof Error ? err.message : String(err);
-    console.error(`GHL webhook failed: ${msg}`);
+    console.error(`GHL webhook (${payload.email}) failed: ${msg}`);
   }
 }
