@@ -22,9 +22,6 @@ export function ContactStep({
         className="mt-8 space-y-4"
         onSubmit={(e) => {
           e.preventDefault();
-          // [CONFIRM] Nothing is submitted anywhere yet beyond local
-          // state — wire this up to the real lead-capture destination
-          // (GHL, an API route, etc.) once it exists.
           const data = new FormData(e.currentTarget);
           const email = String(data.get("email") ?? "");
           const phone = String(data.get("phone") ?? "");

@@ -92,3 +92,63 @@ export async function sendCapiEvent({
     console.error(`Facebook CAPI (Assessment Submit) failed: ${msg}`);
   }
 }
+
+// Posts a completed assessment to the GoHighLevel inbound webhook,
+// which triggers the GHL workflow that creates/updates the contact.
+// Fields are sent flat (not nested) so each one shows up as its own
+// mappable value in GHL's "Inbound Webhook" trigger. Never throws —
+// a GHL outage must not block someone from seeing their results.
+export async function submitLeadToGhl({
+  contact,
+  answers,
+  questions,
+  attribution,
+  pageUrl,
+}: {
+  contact: { name: string; email: string; phone: string };
+  answers: Record<string, string>;
+  questions: { id: string; question: string }[];
+  attribution: Record<string, string>;
+  pageUrl: string;
+}): Promise<void> {
+  const webhookUrl = process.env.GHL_WEBHOOK_URL;
+  if (!webhookUrl) {
+    console.error('GHL webhook: skipped — missing env var (GHL_WEBHOOK_URL)');
+    return;
+  }
+
+  const [firstName, ...rest] = contact.name.trim().split(/\s+/);
+  // One readable block of every question + answer, handy for dropping
+  // straight into a GHL contact note or notification email.
+  const summary = questions
+    .filter((q) => answers[q.id])
+    .map((q) => `${q.question}\n${answers[q.id]}`)
+    .join('\n\n');
+
+  const payload = {
+    first_name: firstName ?? '',
+    last_name: rest.join(' '),
+    full_name: contact.name.trim(),
+    email: contact.email.trim(),
+    phone: contact.phone.trim(),
+    source: 'Assessment',
+    page_url: pageUrl,
+    ...attribution,
+    ...answers,
+    assessment_summary: summary,
+  };
+
+  try {
+    const res = await fetch(webhookUrl, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) {
+      console.error(`GHL webhook: ${res.status} ${await res.text()}`);
+    }
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(`GHL webhook failed: ${msg}`);
+  }
+}

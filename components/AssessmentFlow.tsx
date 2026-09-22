@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import type { AssessmentQuestionConfig } from "@/lib/assessment-questions";
 import type { ContactInfo } from "@/lib/assessmentReport";
+import { submitLeadToGhl } from "@/app/assessment/actions";
 import { ContactStep } from "./ContactStep";
 import { DisqualifiedStep } from "./DisqualifiedStep";
 import { LoadingStep } from "./LoadingStep";
@@ -36,6 +37,15 @@ function replaceStep(searchParams: URLSearchParams, token: string) {
   const params = new URLSearchParams(searchParams.toString());
   params.set("step", token);
   window.history.replaceState(null, "", `?${params.toString()}`);
+}
+
+// UTM params + ad click IDs captured on landing by UtmForwarder.
+function readAttribution(): Record<string, string> {
+  try {
+    return JSON.parse(sessionStorage.getItem("attribution") || "{}");
+  } catch {
+    return {};
+  }
 }
 
 // `step` is 1-based (the question/step someone's currently on), `total`
@@ -112,9 +122,6 @@ export function AssessmentFlow({
 
   function handleSelect(option: string) {
     setAnswers((prev) => ({ ...prev, [question.id]: option }));
-    // [CONFIRM] Answers only live in this component's state — wire
-    // them up to real storage/submission once there's somewhere for
-    // them to go (see ContactStep and lib/assessmentReport.ts).
     if (isDisqualifying(question.id, option)) {
       window.setTimeout(
         () => pushStep(searchParams, "disqualified"),
@@ -155,6 +162,18 @@ export function AssessmentFlow({
         <ProgressBar step={totalSteps} total={totalSteps} />
         <ContactStep
           onSubmit={(info) => {
+            submitLeadToGhl({
+              contact: info,
+              answers,
+              questions: questions.map(({ id, question }) => ({
+                id,
+                question,
+              })),
+              attribution: readAttribution(),
+              pageUrl: window.location.href,
+            }).catch((err) =>
+              console.error("[ghl] lead submission failed", err),
+            );
             setContact(info);
             setResultsReady(false);
             pushStep(searchParams, "submitted");
