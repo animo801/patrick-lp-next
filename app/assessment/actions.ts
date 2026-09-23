@@ -131,7 +131,7 @@ export async function submitLeadToGhl({
     full_name: contact.name.trim(),
     email: contact.email.trim(),
     phone: contact.phone.trim(),
-    source: 'Assessment',
+    source: 'FB Ad from app.3pcllc.com',
     page_url: pageUrl,
     ...attribution,
     ...answers,
