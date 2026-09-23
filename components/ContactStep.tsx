@@ -35,7 +35,20 @@ export function ContactStep({
       >
         <ContactField label="Full name" type="text" name="name" required />
         <ContactField label="Email" type="email" name="email" required />
-        <ContactField label="Phone" type="tel" name="phone" required />
+        <ContactField
+          label="Phone"
+          type="tel"
+          name="phone"
+          inputMode="tel"
+          autoComplete="tel"
+          placeholder="(555) 555-5555"
+          required
+          pattern="\(\d{3}\) \d{3}-\d{4}"
+          title="Please enter a 10-digit phone number"
+          onChange={(e) => {
+            e.currentTarget.value = formatUsPhone(e.currentTarget.value);
+          }}
+        />
 
         <button
           type="submit"
@@ -46,6 +59,18 @@ export function ContactStep({
       </form>
     </section>
   );
+}
+
+// Formats digits as a US number while typing: (555) 555-5555.
+// Drops a leading country code 1 (e.g. from autofilled "+1 555...").
+function formatUsPhone(value: string) {
+  let digits = value.replace(/\D/g, "");
+  if (digits.length === 11 && digits.startsWith("1")) digits = digits.slice(1);
+  digits = digits.slice(0, 10);
+  if (digits.length === 0) return "";
+  if (digits.length < 4) return `(${digits}`;
+  if (digits.length < 7) return `(${digits.slice(0, 3)}) ${digits.slice(3)}`;
+  return `(${digits.slice(0, 3)}) ${digits.slice(3, 6)}-${digits.slice(6)}`;
 }
 
 function ContactField({
