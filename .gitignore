@@ -39,3 +39,7 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# original full-size hero videos (web copies are hero-web.mp4 / hero-poster.jpg)
+/public/hero.mp4
+/public/hero-2.mp4
