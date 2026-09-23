@@ -6,8 +6,8 @@ export type ContactInfo = {
 
 export function reportHeadline(contact: ContactInfo) {
   return contact.name
-    ? `${firstName(contact.name)}, here’s your report.`
-    : "Here’s your report.";
+    ? `${firstName(contact.name)}, thanks for submitting`
+    : "Thanks for submitting";
 }
 
 // [CONFIRM] Priority-based framing — swap for Patrick's real

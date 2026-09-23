@@ -26,7 +26,11 @@ export function ResultsStep({
           {reportHeadline(contact)}
         </h1>
         <p className="mx-auto mt-3 max-w-[520px] text-lg leading-[1.4] text-black/60">
-          Here’s a summary of everything you told us.
+          We just sent you a text to confirm we got it and Patrick is
+          working on making your video review.
+        </p>
+        <p className="mx-auto mt-10 max-w-[520px] text-lg leading-[1.4] text-black/60">
+          Here is a recap of what you told us:
         </p>
 
         <dl className="mt-8 divide-y divide-black/10 overflow-hidden rounded-lg border border-black/10 bg-white text-left">
