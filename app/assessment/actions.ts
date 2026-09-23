@@ -47,10 +47,10 @@ export async function sendCapiEvent({
   const userAgent = headersList.get('user-agent') ?? '';
   const eventSourceUrl = headersList.get('referer') ?? '';
 
-  // [TEMP] Test event code so events show in Events Manager's "Test
-  // events" tab. REMOVE the fallback once testing is done, or real leads
-  // will be tagged as test events and won't count.
-  const testEventCode = process.env.META_CAPI_TEST_EVENT_CODE ?? 'TEST71117';
+  // Set META_CAPI_TEST_EVENT_CODE only while testing, so events show in
+  // Events Manager's "Test events" tab. Leave it unset in production —
+  // test events don't count as real conversions.
+  const testEventCode = process.env.META_CAPI_TEST_EVENT_CODE;
 
   const payload = {
     data: [

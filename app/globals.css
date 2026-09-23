@@ -65,6 +65,29 @@ h3 {
   }
 }
 
+/* ============ HERO VIDEO ENTRANCE ============
+   The hero's phone video rises up from below and fades in on page
+   load. CSS-only so it starts with the first paint instead of waiting
+   for React to hydrate. `both` holds it hidden during the delay. */
+.hero-video-rise {
+  animation: hero-video-rise 0.8s cubic-bezier(0.22, 1, 0.36, 1) 0.2s both;
+}
+@keyframes hero-video-rise {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 24px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .hero-video-rise {
+    animation: none;
+  }
+}
+
 /* ============ STICKY CTA REVEAL ============
    Both sticky CTAs (desktop top-right, mobile bottom bar) start
    invisible and fade in once StickyCta's scroll-observer effect adds

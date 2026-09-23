@@ -6,7 +6,7 @@ export function Hero({ ctaHref }: { ctaHref?: string } = {}) {
   return (
     <section className='px-0 md:px-6'>
       <div className='md:mx-auto md:flex md:max-w-[1100px] md:items-center md:gap-12'>
-        <div className='relative md:flex-1'>
+        <div className='relative overflow-hidden md:flex-1'>
           <Image
             src={heroContractor}
             alt='Contractor reviewing project details on a jobsite'
@@ -14,12 +14,18 @@ export function Hero({ ctaHref }: { ctaHref?: string } = {}) {
             priority
             sizes='(min-width: 768px) 50vw, 100vw'
           />
-          {/* [CONFIRM] Placeholder device mockup — Figma left this box
-              empty. Swap the dashed content below for a real screenshot
-              of the assessment tool (as an <Image>), or delete this div. */}
-          <div className='absolute left-6 top-6 flex h-[196px] w-[132px] items-center justify-center rounded-lg border-4 border-black bg-white p-2 text-center font-sans text-[11px] font-semibold leading-tight text-black/40 md:left-10 md:top-10 md:h-[260px] md:w-[176px]'>
-            Add assessment tool screenshot here
-          </div>
+          {/* Muted + playsInline so it autoplays on phones too. The
+              video has its own device frame baked in, so no border here. */}
+          <video
+            src='/hero-web.mp4'
+            poster='/hero-poster.jpg'
+            autoPlay
+            muted
+            loop
+            playsInline
+            aria-hidden='true'
+            className='hero-video-rise absolute left-3 top-5 h-[226px] w-[152px] rounded-lg object-cover md:left-4 md:top-10 md:h-[306px] md:w-[206px]'
+          />
         </div>
 
         <div className='px-6 pb-10 pt-6 md:flex-1 md:px-0 md:py-0'>
