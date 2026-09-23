@@ -3,6 +3,7 @@
 import { createHash } from 'crypto';
 import { cookies, headers } from 'next/headers';
 import { META_PIXEL_DATASET_ID } from '@/lib/constants';
+import { encodeReviewCode } from '@/lib/review-code';
 
 // Meta requires PII in user_data (email, phone) to be lowercased,
 // trimmed, and SHA-256 hashed before it's sent — never send raw PII.
@@ -125,6 +126,11 @@ export async function submitLeadToGhl({
     .map((q) => `${q.question}\n${answers[q.id]}`)
     .join('\n\n');
 
+  // Link to the /review dashboard for Patrick — the answers are packed
+  // into the URL itself, so there's nothing to store.
+  const reviewUrl = new URL('/review', pageUrl);
+  reviewUrl.searchParams.set('r', encodeReviewCode(answers));
+
   const payload = {
     first_name: firstName ?? '',
     last_name: rest.join(' '),
@@ -136,6 +142,7 @@ export async function submitLeadToGhl({
     ...attribution,
     ...answers,
     assessment_summary: summary,
+    review_url: reviewUrl.toString(),
   };
 
   try {
