@@ -5,9 +5,9 @@
 export const ASSESSMENT_URL = "/assessment";
 
 // /score-app is an exact clone of the homepage, except its CTAs skip
-// the in-app quiz and go straight to this external funnel instead.
-export const SCORE_APP_ASSESSMENT_URL =
-  "https://go.3pcllc.com/millionaire-contractor-growth-blueprint/assessement";
+// the in-app quiz and go to a page with the embedded ScoreApp quiz
+// instead (app/score-app/assessment/page.tsx).
+export const SCORE_APP_ASSESSMENT_URL = "/score-app/assessment";
 
 // [CONFIRM] Placeholder — the results page's "book a call" CTA points
 // here. Swap for Patrick's real booking link (Calendly, GHL, etc.)

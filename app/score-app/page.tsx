@@ -12,8 +12,8 @@ import { UtmForwarder } from "@/components/UtmForwarder";
 import { SCORE_APP_ASSESSMENT_URL } from "@/lib/constants";
 
 // [CONFIRM] Clone of the "/" homepage. Two intended differences from
-// "/": every CTA points to SCORE_APP_ASSESSMENT_URL (an external GHL
-// funnel) instead of the in-app quiz, and the logo — Header/Footer
+// "/": every CTA points to SCORE_APP_ASSESSMENT_URL (the embedded
+// ScoreApp quiz) instead of the in-app quiz, and the logo — Header/Footer
 // still fall back to the default logo.png here since there's no
 // separate score-app logo asset yet. Pass `logo`/`logoAlt` to
 // <Header> and <Footer> once one exists (see their prop types).
