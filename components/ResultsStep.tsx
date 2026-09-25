@@ -1,3 +1,4 @@
+import Script from "next/script";
 import { TrustStrip } from "./TrustStrip";
 import {
   reportHeadline,
@@ -5,7 +6,6 @@ import {
   type ContactInfo,
 } from "@/lib/assessmentReport";
 import type { AssessmentQuestionConfig } from "@/lib/assessment-questions";
-import { BOOKING_URL } from "@/lib/constants";
 
 // [CONFIRM] No Figma design for this screen yet — built to match the
 // site's existing visual language (the report list follows the
@@ -52,6 +52,8 @@ export function ResultsStep({
 
       <TrustStrip />
 
+      {/* GHL booking widget. form_embed.js finds the iframe by id and
+          auto-resizes it to fit the calendar. */}
       <section className="bg-blue px-6 py-16 text-center md:py-20">
         <h2 className="text-[28px] leading-[1.2] text-white md:text-[36px]">
           Let’s go over this together.
@@ -59,13 +61,20 @@ export function ResultsStep({
         <p className="mx-auto mt-4 max-w-[520px] text-lg leading-[1.4] text-white/80">
           {priorityNote(answers)}
         </p>
-        <a
-          href={BOOKING_URL}
-          className="mt-6 inline-flex h-14 items-center justify-center rounded-lg bg-white px-10 font-sans text-xl font-extrabold text-blue no-underline"
-        >
-          Book my free call
-        </a>
+        <div className="mt-8 md:mx-auto md:max-w-3xl">
+          <iframe
+            src="https://link.3pcllc.com/widget/booking/o8hNbEZflzejhERgcyPM"
+            id="WyQxsI2D2EO8CvFKXNtu_1777888927662"
+            title="Book a call"
+            scrolling="no"
+            style={{ width: "100%", border: "none", overflow: "hidden" }}
+          />
+        </div>
       </section>
+      <Script
+        src="https://link.3pcllc.com/js/form_embed.js"
+        strategy="afterInteractive"
+      />
     </>
   );
 }
