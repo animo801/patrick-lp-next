@@ -5,6 +5,8 @@ import { useSearchParams } from "next/navigation";
 import type { AssessmentQuestionConfig } from "@/lib/assessment-questions";
 import type { ContactInfo } from "@/lib/assessmentReport";
 import { submitLeadToGhl } from "@/app/assessment/actions";
+import { answerEvent, FUNNEL_EVENTS } from "@/lib/funnel";
+import { logFunnelEvent } from "@/lib/funnel-client";
 import { ContactStep } from "./ContactStep";
 import { DisqualifiedStep } from "./DisqualifiedStep";
 import { LoadingStep } from "./LoadingStep";
@@ -112,6 +114,7 @@ export function AssessmentFlow({
     if (searchParams.get("step") === null) {
       replaceStep(searchParams, "0");
     }
+    logFunnelEvent(FUNNEL_EVENTS.quizStart);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
@@ -122,7 +125,13 @@ export function AssessmentFlow({
 
   function handleSelect(option: string) {
     setAnswers((prev) => ({ ...prev, [question.id]: option }));
+    if (question.type === "select") {
+      logFunnelEvent(
+        answerEvent(question.id, question.options.indexOf(option)),
+      );
+    }
     if (isDisqualifying(question.id, option)) {
+      logFunnelEvent(FUNNEL_EVENTS.disqualified);
       window.setTimeout(
         () => pushStep(searchParams, "disqualified"),
         SELECT_ADVANCE_DELAY_MS,
@@ -162,6 +171,7 @@ export function AssessmentFlow({
         <ProgressBar step={totalSteps} total={totalSteps} />
         <ContactStep
           onSubmit={(info) => {
+            logFunnelEvent(FUNNEL_EVENTS.contactSubmit);
             submitLeadToGhl({
               contact: info,
               answers,

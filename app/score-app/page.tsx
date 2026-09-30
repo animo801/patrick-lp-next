@@ -9,6 +9,8 @@ import { FinalCta } from "@/components/FinalCta";
 import { Footer } from "@/components/Footer";
 import { StickyCta } from "@/components/StickyCta";
 import { UtmForwarder } from "@/components/UtmForwarder";
+import { FunnelTracker } from "@/components/FunnelTracker";
+import { FUNNEL_EVENTS } from "@/lib/funnel";
 import { SCORE_APP_ASSESSMENT_URL } from "@/lib/constants";
 
 // [CONFIRM] Clone of the "/" homepage. Two intended differences from
@@ -21,6 +23,10 @@ export default function ScoreApp() {
   return (
     <>
       <UtmForwarder />
+      <FunnelTracker
+        landedEvent={FUNNEL_EVENTS.scoreAppLanded}
+        ctaClickEvent={FUNNEL_EVENTS.scoreAppCtaClick}
+      />
       <StickyCta ctaHref={SCORE_APP_ASSESSMENT_URL} />
       <Header />
       <Hero ctaHref={SCORE_APP_ASSESSMENT_URL} />
