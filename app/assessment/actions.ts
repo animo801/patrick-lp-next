@@ -20,11 +20,15 @@ export async function sendCapiEvent({
   eventId,
   email,
   phone,
+  name,
+  fbclid,
 }: {
   eventName: string;
   eventId: string;
   email?: string;
   phone?: string;
+  name?: string;
+  fbclid?: string;
 }): Promise<void> {
   const pixelId =
     process.env.NEXT_PUBLIC_META_PIXEL_ID ?? META_PIXEL_DATASET_ID;
@@ -40,7 +44,29 @@ export async function sendCapiEvent({
   const cookieStore = await cookies();
   const headersList = await headers();
   const fbp = cookieStore.get('_fbp')?.value ?? '';
-  const fbc = cookieStore.get('_fbc')?.value ?? '';
+  // The pixel only sets _fbc when it runs on the ad's landing page, so
+  // it's often missing (ad blockers, Safari). Without it Meta can't tie
+  // the lead to the ad click, so fall back to building it from the
+  // fbclid we captured ourselves, in Meta's fb.1.<ms>.<fbclid> format.
+  const cleanFbclid =
+    fbclid && /^[\w-]{1,500}$/.test(fbclid) ? fbclid : undefined;
+  const fbc =
+    cookieStore.get('_fbc')?.value ??
+    (cleanFbclid ? `fb.1.${Date.now()}.${cleanFbclid}` : '');
+
+  // Meta wants phone numbers as digits with the country code. The form
+  // only takes 10-digit US numbers, so prefix the "1".
+  const phoneDigits = phone?.replace(/\D/g, '') ?? '';
+  const normalizedPhone =
+    phoneDigits.length === 10 ? `1${phoneDigits}` : phoneDigits;
+
+  // Names: lowercase letters only (no spaces or punctuation) before
+  // hashing, per Meta's normalization rules.
+  const [firstName, ...restNames] = (name ?? '').trim().split(/\s+/);
+  const normName = (n: string) =>
+    n.toLowerCase().normalize('NFD').replace(/[^a-z]/g, '');
+  const fn = normName(firstName ?? '');
+  const ln = normName(restNames.at(-1) ?? '');
   const ip =
     headersList.get('x-forwarded-for')?.split(',')[0]?.trim() ??
     headersList.get('x-real-ip') ??
@@ -67,7 +93,13 @@ export async function sendCapiEvent({
           ...(ip && { client_ip_address: ip }),
           ...(userAgent && { client_user_agent: userAgent }),
           ...(email && { em: [hashPii(email)] }),
-          ...(phone && { ph: [hashPii(phone.replace(/[^\d]/g, ''))] }),
+          ...(normalizedPhone && { ph: [hashPii(normalizedPhone)] }),
+          ...(fn && { fn: [hashPii(fn)] }),
+          ...(ln && { ln: [hashPii(ln)] }),
+          country: [hashPii('us')],
+          // Stable per-person ID (hashed email) so repeat submissions
+          // from the same lead match each other.
+          ...(email && { external_id: [hashPii(email)] }),
         },
       },
     ],
@@ -83,8 +115,18 @@ export async function sendCapiEvent({
       body: JSON.stringify(payload),
     });
     const body = await res.text();
+    // Log which match keys were sent (never the values) so the logs
+    // show how well each lead can be matched to an ad click.
+    const keys = Object.keys(payload.data[0].user_data).join(',');
+    const fbcSource = cookieStore.get('_fbc')
+      ? 'cookie'
+      : cleanFbclid
+        ? 'fbclid'
+        : 'none';
     if (res.ok) {
-      console.log(`Facebook CAPI (Assessment Submit): ${res.status} ${body}`);
+      console.log(
+        `Facebook CAPI (Assessment Submit): ${res.status} keys=[${keys}] fbc=${fbcSource} ${body}`,
+      );
     } else {
       console.error(`Facebook CAPI (Assessment Submit): ${res.status} ${body}`);
     }

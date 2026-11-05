@@ -25,9 +25,10 @@ export function ContactStep({
           const data = new FormData(e.currentTarget);
           const email = String(data.get("email") ?? "");
           const phone = String(data.get("phone") ?? "");
-          trackCustomEvent("Submit from Vercel App", { email, phone });
+          const name = String(data.get("name") ?? "");
+          trackCustomEvent("Submit from Vercel App", { email, phone, name });
           onSubmit({
-            name: String(data.get("name") ?? ""),
+            name,
             email,
             phone,
           });
